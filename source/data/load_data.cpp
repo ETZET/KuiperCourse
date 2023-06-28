@@ -38,9 +38,19 @@ std::shared_ptr<Tensor<float >> CSVDataLoader::LoadDataWithHeader(const std::str
         //todo 补充
         // 能够读取到第一行的csv列名，并存放在headers中
         // 能够读取到第二行之后的csv数据，并相应放置在data变量的row，col位置中
+        if (row == 0){
+          headers.push_back(token);
+        }else{
+          data.at(row-1,col) = std::stof(token);
+        }
       }
       catch (std::exception &e) {
         LOG(ERROR) << "Parse CSV File meet error: " << e.what();
+        if (std::strcmp(e.what(), "stof") == 0) {
+          LOG(ERROR) << "Cannot cast " << token << " to float";
+        }else if (std::strcmp(e.what(), "Mat::operator(): index out of bound") == 0){
+          LOG(ERROR) << "Cannot index (" << row << "," << col<< ")" << ", the bound is (" << rows << "," << cols<< ")";
+        }
         continue;
       }
       col += 1;
