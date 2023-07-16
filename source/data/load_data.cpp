@@ -35,12 +35,11 @@ std::shared_ptr<Tensor<float >> CSVDataLoader::LoadDataWithHeader(const std::str
     while (line_stream.good()) {
       std::getline(line_stream, token, split_char);
       try {
-        // todo 补充
-        // 能够读取到第一行的csv列名，并存放在headers中
-        // headers.push_back(xx)
-
-        // data.at(row,col) = xxx
-        // 能够读取到第二行之后的csv数据，并相应放置在data变量的row，col位置中
+        if (row == 0){
+          headers.push_back(token);
+        }else{
+          data.at(row-1,col) = std::stof(token);
+        }
       }
       catch (std::exception &e) {
         LOG(ERROR) << "Parse CSV File meet error: " << e.what();
